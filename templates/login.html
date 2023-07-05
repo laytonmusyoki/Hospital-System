@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %} Login {% endblock %}
+
+
+{% block content %}
+
+<div class="box">
+    <h2 style="text-align: center; color: #555; padding: 2px 10px; background: white; border-radius: 10px;"><span style="color: red;font-size: 80px;">+</span><span style="color: orange;">DISPENSARY</span></h2>
+    {% with messages=get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category,msg in messages %}
+      
+        <div class="alert alert-{{category}} alert-dismissible fade show  name" role="alert" >
+          <strong> {{msg}}</strong>
+          <button type="button" class="btn-close name1" data-bs-dismiss="alert" aria-label="close"></button>
+        </div>
+
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <form action="" method="POST">
+        <input type="text"name="username" value="{{username}}" required placeholder="Enter Username">
+        <input type="password" name="password" value="{{password}}" required placeholder="Enter Password">
+        <button class="btn btn-success">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+</div>
+{% endblock %}
