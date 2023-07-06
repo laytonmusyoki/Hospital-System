@@ -55,6 +55,7 @@
         margin: 20px auto;
         top: 85%;
     }
+    
     @media (min-width: 780px)and(max-width:1023px){
         .box{
             width: 370px;
@@ -69,8 +70,8 @@
     }
     /* profile */
     .profilep{
-        max-width: 550px;
-        margin: 20px auto;
+        max-width: 350px;
+        margin: 38% auto;
         top: 85%;
     }
 
