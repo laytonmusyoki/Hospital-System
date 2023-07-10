@@ -185,7 +185,7 @@ def delete(id):
         return redirect(url_for('login'))
     else:
         cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM schedule WHERE id=%s", (id,))
+        cur.execute("DELETE  FROM schedule WHERE id=%s", (id,))
         mysql.connection.commit()
         cur.close()
         flash('Schedule deleted successfully', 'success')
@@ -339,6 +339,17 @@ def labtest(id):
         
     return render_template('approve.html')
 
+@app.route('/delete_appointment/<id>')
+def del_appointment(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    else:
+        cur=mysql.connection.cursor()
+        cur.execute("DELETE  FROM appointment WHERE id=%s",(id,))
+        mysql.connection.commit()
+        cur.close()
+        flash('Appointment deleted successfully','success')
+        return redirect(url_for('dashboard'))
 
 
 @app.route('/logout')
