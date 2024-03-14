@@ -1,6 +1,6 @@
 from flask import Flask,url_for,render_template,request,flash,redirect,session
-from flask_mysqldb import MySQL
 import re
+import pymysql
 import bcrypt
 import base64
 
@@ -10,17 +10,26 @@ import os
 app=Flask(__name__)
 app.secret_key='hospital'
 
-app.config['MYSQL_HOST']='localhost'
-app.config['MYSQL_USER']='root'
-app.config['MYSQL_PASSWORD']=''
-app.config['MYSQL_DB']='hospital'
-
-mysql=MySQL(app)
+# app.config['MYSQL_HOST']='localhost'
+# app.config['MYSQL_USER']='root'
+# app.config['MYSQL_PASSWORD']=''
+# app.config['MYSQL_DB']='hospital'
 
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+connection=pymysql.connect(
+    host='localhost',
+    user='root',
+    password='',
+    database='Hospital'
+)
+
+
+# mysql=MySQL(app)
+
+
+# @app.route('/')
+# def home():
+#     return render_template('index.html')
 
 
 @app.route('/register',methods=['POST','GET'])
@@ -48,9 +57,9 @@ def register():
             return render_template('register.html',username=username,email=email,password=password,confirm=confirm)
         else:
             hashed_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            cur=mysql.connection.cursor()
+            cur=connection.cursor()
             cur.execute("INSERT INTO users(username,email,password,choice)VALUES(%s,%s,%s,%s)",(username,email,hashed_password,choice))
-            mysql.connection.commit()
+            connection.commit()
             cur.close()
             flash(f"Account created  for {username}",'success')
             return redirect(url_for('login'))
@@ -64,9 +73,9 @@ def login():
         username=request.form['username']
         password=request.form['password']
 
-        cur=mysql.connection.cursor()
+        cur=connection.cursor()
         cur.execute("SELECT * FROM users WHERE username=%s",(username,))
-        mysql.connection.commit()
+        connection.commit()
         user=cur.fetchone()
         cur.close()
         if user is not None:
@@ -94,7 +103,7 @@ def dashboard():
         return redirect(url_for('login'))
     else:
         user_id = session['user_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
 
         cur.execute("SELECT choice FROM users WHERE id=%s", (user_id,))
         result = cur.fetchone()[0]
@@ -136,9 +145,9 @@ def add():
             morning=request.form['morning']
             afternoon=request.form['afternoon']
             evening=request.form['evening']
-            cur=mysql.connection.cursor()
+            cur=connection.cursor()
             cur.execute("INSERT INTO schedule(user_id,doctor,day,early,morning,afternoon,evening)VALUES(%s,%s,%s,%s,%s,%s,%s)",(user_id,doctor,day,early,morning,afternoon,evening))
-            mysql.connection.commit()
+            connection.commit()
             flash('Schedule added successfuly','success')
             return redirect(url_for('dashboard'))
     return render_template('add.html')
@@ -156,18 +165,18 @@ def update(id):
             morning = request.form['morning']
             afternoon = request.form['afternoon']
             evening = request.form['evening']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute("UPDATE schedule SET day=%s, early=%s, morning=%s, afternoon=%s, evening=%s WHERE id=%s",
                         (day, early, morning, afternoon, evening,id,))
-            mysql.connection.commit()
+            connection.commit()
             cur.close()
             flash('Schedule updated successfully', 'success')
             return redirect(url_for('dashboard'))
         
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute("SELECT * FROM schedule WHERE id=%s", (id,))
         results = cur.fetchone()
-        mysql.connection.commit()
+        connection.commit()
         cur.close()
         
         if results is not None:
@@ -188,9 +197,9 @@ def delete(id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
     else:
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute("DELETE  FROM schedule WHERE id=%s", (id,))
-        mysql.connection.commit()
+        connection.commit()
         cur.close()
         flash('Schedule deleted successfully', 'success')
         return redirect(url_for('dashboard'))
@@ -208,14 +217,14 @@ def book(id):
             phone=request.form['phone']
             time=request.form['time']
             address=request.form['address']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             username=session['username']
             cur.execute("INSERT INTO appointment(doctor,username,name,email,phone,time,address)VALUES(%s,%s,%s,%s,%s,%s,%s)",(doctor,username,name,email,phone,time,address))
-            mysql.connection.commit()
+            connection.commit()
             flash('Appointment made successfully', 'success')
             return redirect(url_for('dashboard'))
         user_id=session['user_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute("SELECT * FROM schedule WHERE id=%s",(id,))
         data = cur.fetchone()
         cur.close()
@@ -241,21 +250,21 @@ def profile():
 
             file=request.files['image']
             if file:
-                cur = mysql.connection.cursor()
+                cur = connection.cursor()
                 cur.execute("UPDATE users SET image=%s WHERE id=%s",(file.read() ,user_id))
-                mysql.connection.commit()
+                connection.commit()
                 cur.close() 
             
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute("UPDATE users SET username=%s,email=%s,address=%s, address2=%s, city=%s, state=%s, zipcode=%s WHERE id=%s",
                         (username,email,address, address2, city, state, zipcode, user_id))
-            mysql.connection.commit()
+            connection.commit()
             cur.close()
             
             flash('Details updated successfully', 'success')
             
         user_id = session['user_id']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
         user = cur.fetchone() 
         cur.close()
@@ -283,14 +292,14 @@ def approve(id):
         if request.method=='POST':
             user_id=request.form['id']
             action=request.form['action']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute("UPDATE appointment SET action=%s WHERE id=%s",(action,id,))
-            mysql.connection.commit()
+            connection.commit()
             cur.close()
             flash('Action updated successfully', 'success')
             return redirect(url_for('dashboard'))
         username=session['username']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute("SELECT * FROM schedule")
         data = cur.fetchall()
         cur.execute("SELECT * FROM appointment WHERE id=%s",(id,))
@@ -319,14 +328,14 @@ def labtest(id):
             medication=request.form['medication']
             testmethod=request.form['method']
             testcost=request.form['cost']
-            cur = mysql.connection.cursor()
+            cur = connection.cursor()
             cur.execute("UPDATE appointment SET testname=%s,allergies=%s,medication=%s,testmethod=%s,testcost=%s WHERE id=%s",(testname,allergies,medication,testmethod,testcost,id,))
-            mysql.connection.commit()
+            connection.commit()
             cur.close()
             flash('Labtest sent successfully', 'success')
             return redirect(url_for('dashboard'))
         username=session['username']
-        cur = mysql.connection.cursor()
+        cur = connection.cursor()
         cur.execute("SELECT * FROM schedule")
         data = cur.fetchall()
         cur.execute("SELECT * FROM appointment WHERE id=%s",(id,))
@@ -348,9 +357,9 @@ def del_appointment(id):
     if 'username' not in session:
         return redirect(url_for('login'))
     else:
-        cur=mysql.connection.cursor()
+        cur=connection.cursor()
         cur.execute("DELETE  FROM appointment WHERE id=%s",(id,))
-        mysql.connection.commit()
+        connection.commit()
         cur.close()
         flash('Appointment deleted successfully','success')
         return redirect(url_for('dashboard'))

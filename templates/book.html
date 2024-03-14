@@ -3,7 +3,21 @@
 
 {% block content %}
 
-
+<style>
+    input{
+        height: 55px;
+        outline: none;
+        border: 3px solid #555;
+        padding-left: 8px;
+    }
+    label{
+        color: green;
+        font-weight: bold;
+    }
+    button{
+        margin-top: 10px;
+    }
+</style>
 
 
 <div class="container">
@@ -13,20 +27,36 @@
                 <h3 style="text-align: center; color: #555;">Book Appointment</h3>
                 <div class="box2">
                     <form action="" method="POST">
-                        <label for="">Doctor</label>
-                        <input type="text" name="doctor" placeholder="Doctor" value="{{doctor}}" readonly>
-                        <label for="">Full name</label>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="">Doctor</label>
+                            <input type="text" name="doctor" placeholder="Doctor" value="{{doctor}}" readonly>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Full name</label>
                         <input type="text" name="name" placeholder="Enter your full name" required>
-                        <label for="">Time</label>
-                        <input type="datetime-local" name="time"  required>
-                        <label for="">Email</label>
-                        <input type="text" name="email" placeholder="Enter your email "  required>
-                        <label for="">Phone</label>
-                        <input type="text" name="phone" placeholder="Enter your phone"  required>
-                        <label for="">Address</label>
-                        <input type="text" name="address"  placeholder="Enter address" required>
-                        <button type="submit" class="btn btn-primary">Make an appointment</button>
-                    </form>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Time</label>
+                            <input type="datetime-local" name="time"  required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Email</label>
+                            <input type="text" name="email" placeholder="Enter your email "  required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Phone</label>
+                            <input type="text" name="phone" placeholder="Enter your phone"  required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="">Address</label>
+                            <input type="text" name="address"  placeholder="Enter address" required>
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-primary">Make an appointment</button>
+                        </div>
+                    </div>
+                </form>
                 </div>
         </div>
     </div>

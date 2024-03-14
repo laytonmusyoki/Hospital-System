@@ -2,7 +2,7 @@
     background: linear-gradient(135deg,#11bb9c,#ACB6E5);
     padding: 20px 3%;
     box-shadow: hsl(0, 0%, 80%)0 0 16px;
-
+    z-index: 1000;
 }
 .navbar .navbar-brand{
     font-size: 30px;
