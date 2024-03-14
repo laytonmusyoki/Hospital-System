@@ -19,8 +19,8 @@
     {% endif %}
     {% endwith %}
     <form action="" method="POST">
-        <input type="text"name="username" value="{{username}}" required placeholder="Enter Username">
-        <input type="password" name="password" value="{{password}}" required placeholder="Enter Password">
+        <input type="text"name="username" value="" required placeholder="Enter Username">
+        <input type="password" name="password" value="" required placeholder="Enter Password">
         <button class="btn btn-success">Login</button>
     </form>
     <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>

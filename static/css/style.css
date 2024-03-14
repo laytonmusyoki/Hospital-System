@@ -1,3 +1,36 @@
+.navbar{
+    background: linear-gradient(135deg,#11bb9c,#ACB6E5);
+    padding: 20px 3%;
+    box-shadow: hsl(0, 0%, 80%)0 0 16px;
+
+}
+.navbar .navbar-brand{
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+}
+.navbar .navbar-brand a{
+    text-decoration: none;
+}
+.navbar .navbar-brand a:hover{
+    color: #000 !important;
+}
+.navbar .navbar-nav .nav-item{
+    margin: 0 10px;
+}
+
+.navbar .navbar-nav .nav-item a{
+    text-decoration: none;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.5s ease;
+}
+.navbar .navbar-nav .nav-item a:hover{
+    color: #000;
+}
+
+
 .nav-item{
     font-weight: bold;
 }
@@ -7,7 +40,7 @@
     position: absolute;
     transform: translate(-50%,-50%);
     box-shadow: hsl(0, 0%, 80%) 0 0 16px;
-    width: 400px;
+    width: 450px;
     height: auto;
     border-radius:35px  4px 35px 4px;
     padding: 10px;
@@ -15,11 +48,12 @@
 }
 .box input,select{
     width: 100%;
-    height: 37px;
+    height: 45px;
     margin: 5px 0;
     outline: none;
-    border-radius: 3px;
-    padding-left: 3px;
+    border:none;
+    border-radius: 5px;
+    padding-left: 8px;
 }
 .box button{
     margin: 5px 0;

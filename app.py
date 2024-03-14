@@ -22,6 +22,7 @@ mysql=MySQL(app)
 def home():
     return render_template('index.html')
 
+
 @app.route('/register',methods=['POST','GET'])
 def register():
     if request.method=='POST':
@@ -83,6 +84,9 @@ def login():
             flash('Incorrect username','danger')
             return render_template('login.html',username=username,password=password)
     return render_template('login.html')
+
+
+
 
 @app.route('/dashboard')
 def dashboard():
