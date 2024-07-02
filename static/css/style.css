@@ -40,7 +40,7 @@
     position: absolute;
     transform: translate(-50%,-50%);
     box-shadow: hsl(0, 0%, 80%) 0 0 16px;
-    width: 450px;
+    width: 520px;
     height: auto;
     border-radius:35px  4px 35px 4px;
     padding: 10px;
@@ -166,7 +166,7 @@
 
 }
 .profilep{
-    width: 800px;
+    width: 1000px;
     height: auto;
     box-shadow: 2px 2px 10px black;
     top: 70%;

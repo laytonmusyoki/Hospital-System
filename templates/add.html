@@ -3,7 +3,21 @@
 
 {% block content %}
 
-
+<style>
+    select{
+        height: 65px;
+        outline: none;
+        border: 3px solid #555;
+        padding-left: 8px;
+    }
+    label{
+        color: green;
+        font-weight: bold;
+    }
+    button{
+        margin-top: 10px;
+    }
+</style>
 
 
 <div class="container">
@@ -13,7 +27,9 @@
                 <h3 style="text-align: center; color: #555;">ADD SCHEDULE</h3>
                 <div class="box2">
                     <form action="" method="POST">
-                    <label for="">Day</label>
+                    <div class="row">
+                    <div class="col-lg-6">
+                        <label for="">Day</label>
                     <select name="day" id="">
                         <option value="Monday">Monday</option>
                         <option value="Tuesday">Tuesday</option>
@@ -21,29 +37,47 @@
                         <option value="Thursday">Thursday</option>
                         <option value="Friday">Friday</option>
                     </select>
-                    <label for="">9am-10am</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="">9am-10am</label>
                     <select name="early" id="">
                         <option value="Available">Available</option>
                         <option value="Booked">Booked</option>
                     </select>
-                    <label for="">10:30am-12pm</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="">10:30am-12pm</label>
                     <select name="morning" id="">
                         <option value="Available">Available</option>
                         <option value="Booked">Booked</option>
                     </select>
-                    <label for="">1pm-3:30pm</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="">12:30pm-2pm</label>
                     <select name="afternoon" id="">
                         <option value="Available">Available</option>
                         <option value="Booked">Booked</option>
                     </select>
-                    <label for="">3:30pm-5:00pm</label>
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="">3:30pm-5:00pm</label>
                     <select name="evening" id="">
                         <option value="Available">Available</option>
                         <option value="Booked">Booked</option>
                     </select>
-                    <button type="submit" class="btn btn-primary">Add schedule</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn btn-primary">Add schedule</button>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    
                 </form>
                 </div>
+            </div>
         </div>
     </div>
 </div>

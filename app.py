@@ -10,11 +10,7 @@ import os
 app=Flask(__name__)
 app.secret_key='hospital'
 
-# app.config['MYSQL_HOST']='localhost'
-# app.config['MYSQL_USER']='root'
-# app.config['MYSQL_PASSWORD']=''
-# app.config['MYSQL_DB']='hospital'
-
+# database connection
 
 connection=pymysql.connect(
     host='localhost',
@@ -24,12 +20,6 @@ connection=pymysql.connect(
 )
 
 
-# mysql=MySQL(app)
-
-
-# @app.route('/')
-# def home():
-#     return render_template('index.html')
 
 
 @app.route('/register',methods=['POST','GET'])
@@ -233,6 +223,8 @@ def book(id):
         return render_template('book.html',doctor=doctor)
 
 
+from flask import request
+
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():
     if 'user_id' not in session:
@@ -248,27 +240,28 @@ def profile():
             state = request.form['state']
             zipcode = request.form['zip']
 
-            file=request.files['image']
-            if file:
-                cur = connection.cursor()
-                cur.execute("UPDATE users SET image=%s WHERE id=%s",(file.read() ,user_id))
-                connection.commit()
-                cur.close() 
-            
+            if 'image' in request.files:
+                file = request.files['image']
+                if file.filename != '':
+                    cur = connection.cursor()
+                    cur.execute("UPDATE users SET image=%s WHERE id=%s", (file.read(), user_id))
+                    connection.commit()
+                    cur.close()
+
             cur = connection.cursor()
-            cur.execute("UPDATE users SET username=%s,email=%s,address=%s, address2=%s, city=%s, state=%s, zipcode=%s WHERE id=%s",
-                        (username,email,address, address2, city, state, zipcode, user_id))
+            cur.execute("UPDATE users SET username=%s, email=%s, address=%s, address2=%s, city=%s, state=%s, zipcode=%s WHERE id=%s",
+                        (username, email, address, address2, city, state, zipcode, user_id))
             connection.commit()
             cur.close()
-            
+
             flash('Details updated successfully', 'success')
-            
+
         user_id = session['user_id']
         cur = connection.cursor()
         cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
-        user = cur.fetchone() 
+        user = cur.fetchone()
         cur.close()
-        
+
         if user:
             username = user[1]
             email = user[2]
@@ -277,12 +270,16 @@ def profile():
             city = user[7]
             state = user[8]
             zipcode = user[9]
-            image=user[10]
-            image_base64=base64.b64encode(image).decode('utf-8')
+            image = user[10]
+            image_base64 = None
+            if image:
+                image_base64 = base64.b64encode(image).decode('utf-8')
+
             return render_template('profile.html', username=username, email=email, address=address, address2=address2,
-                               city=city, state=state, zipcode=zipcode,image_base64=image_base64)
-    
+                                   city=city, state=state, zipcode=zipcode, image_base64=image_base64)
+
     return render_template('profile.html')
+
 
 @app.route('/approve/<id>',methods=['POST','GET'])
 def approve(id):

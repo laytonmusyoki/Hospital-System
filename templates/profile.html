@@ -1,6 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<style>
+  input,select{
+      height: 55px;
+      outline: none;
+      border: 3px solid #555;
+      padding-left: 8px;
+  }
+  label{
+      color: green;
+      font-weight: bold;
+  }
+  button{
+      margin-top: 10px;
+  }
+</style>
+
+
 <div class="profile">
   
   {% with messages=get_flashed_messages(with_categories=True) %}
