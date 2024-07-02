@@ -35,10 +35,9 @@ from .scaffold import setupmethod
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from werkzeug.wrappers import Response as BaseResponse
-
+    from .blueprints import Blueprint
     from ..testing import FlaskClient
     from ..testing import FlaskCliRunner
-    from .blueprints import Blueprint
 
 T_shell_context_processor = t.TypeVar(
     "T_shell_context_processor", bound=ft.ShellContextProcessorCallable
@@ -205,7 +204,7 @@ class App(Scaffold):
     #:
     #: This attribute can also be configured from the config with the
     #: ``TESTING`` configuration key.  Defaults to ``False``.
-    testing = ConfigAttribute[bool]("TESTING")
+    testing = ConfigAttribute("TESTING")
 
     #: If a secret key is set, cryptographic components can use this to
     #: sign cookies and other things. Set this to a complex random value
@@ -213,7 +212,7 @@ class App(Scaffold):
     #:
     #: This attribute can also be configured from the config with the
     #: :data:`SECRET_KEY` configuration key. Defaults to ``None``.
-    secret_key = ConfigAttribute[t.Union[str, bytes, None]]("SECRET_KEY")
+    secret_key = ConfigAttribute("SECRET_KEY")
 
     #: A :class:`~datetime.timedelta` which is used to set the expiration
     #: date of a permanent session.  The default is 31 days which makes a
@@ -222,9 +221,8 @@ class App(Scaffold):
     #: This attribute can also be configured from the config with the
     #: ``PERMANENT_SESSION_LIFETIME`` configuration key.  Defaults to
     #: ``timedelta(days=31)``
-    permanent_session_lifetime = ConfigAttribute[timedelta](
-        "PERMANENT_SESSION_LIFETIME",
-        get_converter=_make_timedelta,  # type: ignore[arg-type]
+    permanent_session_lifetime = ConfigAttribute(
+        "PERMANENT_SESSION_LIFETIME", get_converter=_make_timedelta
     )
 
     json_provider_class: type[JSONProvider] = DefaultJSONProvider
@@ -248,7 +246,7 @@ class App(Scaffold):
     #:     This is a ``dict`` instead of an ``ImmutableDict`` to allow
     #:     easier configuration.
     #:
-    jinja_options: dict[str, t.Any] = {}
+    jinja_options: dict = {}
 
     #: The rule object to use for URL rules created.  This is used by
     #: :meth:`add_url_rule`.  Defaults to :class:`werkzeug.routing.Rule`.
@@ -276,18 +274,18 @@ class App(Scaffold):
     #: .. versionadded:: 1.0
     test_cli_runner_class: type[FlaskCliRunner] | None = None
 
-    default_config: dict[str, t.Any]
+    default_config: dict
     response_class: type[Response]
 
     def __init__(
         self,
         import_name: str,
         static_url_path: str | None = None,
-        static_folder: str | os.PathLike[str] | None = "static",
+        static_folder: str | os.PathLike | None = "static",
         static_host: str | None = None,
         host_matching: bool = False,
         subdomain_matching: bool = False,
-        template_folder: str | os.PathLike[str] | None = "templates",
+        template_folder: str | os.PathLike | None = "templates",
         instance_path: str | None = None,
         instance_relative_config: bool = False,
         root_path: str | None = None,
@@ -385,7 +383,7 @@ class App(Scaffold):
         #: ``'foo'``.
         #:
         #: .. versionadded:: 0.7
-        self.extensions: dict[str, t.Any] = {}
+        self.extensions: dict = {}
 
         #: The :class:`~werkzeug.routing.Map` for this instance.  You can use
         #: this to change the routing converters after the class was created
@@ -437,7 +435,7 @@ class App(Scaffold):
         .. versionadded:: 0.8
         """
         if self.import_name == "__main__":
-            fn: str | None = getattr(sys.modules["__main__"], "__file__", None)
+            fn = getattr(sys.modules["__main__"], "__file__", None)
             if fn is None:
                 return "__main__"
             return os.path.splitext(os.path.basename(fn))[0]
@@ -561,7 +559,7 @@ class App(Scaffold):
 
         Default: ``False``
         """
-        return self.config["DEBUG"]  # type: ignore[no-any-return]
+        return self.config["DEBUG"]
 
     @debug.setter
     def debug(self, value: bool) -> None:
@@ -651,10 +649,10 @@ class App(Scaffold):
         # Add the required methods now.
         methods |= required_methods
 
-        rule_obj = self.url_rule_class(rule, methods=methods, **options)
-        rule_obj.provide_automatic_options = provide_automatic_options  # type: ignore[attr-defined]
+        rule = self.url_rule_class(rule, methods=methods, **options)
+        rule.provide_automatic_options = provide_automatic_options  # type: ignore
 
-        self.url_map.add(rule_obj)
+        self.url_map.add(rule)
         if view_func is not None:
             old_func = self.view_functions.get(endpoint)
             if old_func is not None and old_func != view_func:
@@ -907,12 +905,10 @@ class App(Scaffold):
             Moved from ``flask.redirect``, which calls this method.
         """
         return _wz_redirect(
-            location,
-            code=code,
-            Response=self.response_class,  # type: ignore[arg-type]
+            location, code=code, Response=self.response_class  # type: ignore[arg-type]
         )
 
-    def inject_url_defaults(self, endpoint: str, values: dict[str, t.Any]) -> None:
+    def inject_url_defaults(self, endpoint: str, values: dict) -> None:
         """Injects the URL defaults for the given endpoint directly into
         the values dictionary passed.  This is used internally and
         automatically called on URL building.

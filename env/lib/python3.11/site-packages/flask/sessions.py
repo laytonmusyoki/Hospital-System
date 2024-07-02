@@ -13,15 +13,11 @@ from werkzeug.datastructures import CallbackDict
 from .json.tag import TaggedJSONSerializer
 
 if t.TYPE_CHECKING:  # pragma: no cover
-    import typing_extensions as te
-
     from .app import Flask
-    from .wrappers import Request
-    from .wrappers import Response
+    from .wrappers import Request, Response
 
 
-# TODO generic when Python > 3.8
-class SessionMixin(MutableMapping):  # type: ignore[type-arg]
+class SessionMixin(MutableMapping):
     """Expands a basic dictionary with session attributes."""
 
     @property
@@ -49,8 +45,7 @@ class SessionMixin(MutableMapping):  # type: ignore[type-arg]
     accessed = True
 
 
-# TODO generic when Python > 3.8
-class SecureCookieSession(CallbackDict, SessionMixin):  # type: ignore[type-arg]
+class SecureCookieSession(CallbackDict, SessionMixin):
     """Base class for sessions based on signed cookies.
 
     This session backend will set the :attr:`modified` and
@@ -73,7 +68,7 @@ class SecureCookieSession(CallbackDict, SessionMixin):  # type: ignore[type-arg]
     accessed = False
 
     def __init__(self, initial: t.Any = None) -> None:
-        def on_update(self: te.Self) -> None:
+        def on_update(self) -> None:
             self.modified = True
             self.accessed = True
 
@@ -182,7 +177,7 @@ class SessionInterface:
 
     def get_cookie_name(self, app: Flask) -> str:
         """The name of the session cookie. Uses``app.config["SESSION_COOKIE_NAME"]``."""
-        return app.config["SESSION_COOKIE_NAME"]  # type: ignore[no-any-return]
+        return app.config["SESSION_COOKIE_NAME"]
 
     def get_cookie_domain(self, app: Flask) -> str | None:
         """The value of the ``Domain`` parameter on the session cookie. If not set,
@@ -194,7 +189,8 @@ class SessionInterface:
         .. versionchanged:: 2.3
             Not set by default, does not fall back to ``SERVER_NAME``.
         """
-        return app.config["SESSION_COOKIE_DOMAIN"]  # type: ignore[no-any-return]
+        rv = app.config["SESSION_COOKIE_DOMAIN"]
+        return rv if rv else None
 
     def get_cookie_path(self, app: Flask) -> str:
         """Returns the path for which the cookie should be valid.  The
@@ -202,27 +198,27 @@ class SessionInterface:
         config var if it's set, and falls back to ``APPLICATION_ROOT`` or
         uses ``/`` if it's ``None``.
         """
-        return app.config["SESSION_COOKIE_PATH"] or app.config["APPLICATION_ROOT"]  # type: ignore[no-any-return]
+        return app.config["SESSION_COOKIE_PATH"] or app.config["APPLICATION_ROOT"]
 
     def get_cookie_httponly(self, app: Flask) -> bool:
         """Returns True if the session cookie should be httponly.  This
         currently just returns the value of the ``SESSION_COOKIE_HTTPONLY``
         config var.
         """
-        return app.config["SESSION_COOKIE_HTTPONLY"]  # type: ignore[no-any-return]
+        return app.config["SESSION_COOKIE_HTTPONLY"]
 
     def get_cookie_secure(self, app: Flask) -> bool:
         """Returns True if the cookie should be secure.  This currently
         just returns the value of the ``SESSION_COOKIE_SECURE`` setting.
         """
-        return app.config["SESSION_COOKIE_SECURE"]  # type: ignore[no-any-return]
+        return app.config["SESSION_COOKIE_SECURE"]
 
-    def get_cookie_samesite(self, app: Flask) -> str | None:
+    def get_cookie_samesite(self, app: Flask) -> str:
         """Return ``'Strict'`` or ``'Lax'`` if the cookie should use the
         ``SameSite`` attribute. This currently just returns the value of
         the :data:`SESSION_COOKIE_SAMESITE` setting.
         """
-        return app.config["SESSION_COOKIE_SAMESITE"]  # type: ignore[no-any-return]
+        return app.config["SESSION_COOKIE_SAMESITE"]
 
     def get_expiration_time(self, app: Flask, session: SessionMixin) -> datetime | None:
         """A helper method that returns an expiration date for the session
